@@ -67,18 +67,27 @@ module.exports = function(grunt) {
             console.log("running %j", createSQL);
           }
 
+          grunt.log.write("Takana: creating project...");
+
           db.run(createSQL, _this.name, function(error, lastId, changes) {
             if (error) {
-              grunt.log.error("Takana: could not create project. Please contact support <help@usetakana.com>");
+              grunt.log.writeln("failed");
+              grunt.log.error("Please contact support <help@usetakana.com>");
               callback(error, null);
 
             } else {
               _this.find(function(error, project) {
                 if (error) {
-                  grunt.log.error("Takana: could not create project. Please contact support <help@usetakana.com>");
+                  grunt.log.write("failed");
+                  grunt.log.error("Please contact support <help@usetakana.com>");
                   callback(error, null);
                 } else {
-                  grunt.log.writeln("Takana: successfully created project");
+                  grunt.log.writeln("created")
+                  grunt.log.subhead("Add this script tag just before </body> on every page you want to run Takana on")
+                  grunt.log.writeln("\t<script data-project=\"" + project.name + "\" src=\"http://localhost:48626/edge.js\"></script>");
+                  grunt.log.subhead("\t... or get the Chrome extension")
+                  grunt.log.writeln("\thttps://chrome.google.com/webstore/detail/takana/bldhkhmklhojenikmgdcpdbjfffoeidb?hl=en\n")
+
                   callback(null, project);
                 }
               });
@@ -89,7 +98,7 @@ module.exports = function(grunt) {
         this.findOrCreate    = function(callback) {
           this.find(function(error, project) {
             if (error || !project) {
-              grunt.log.error("Takana: could not find existing project...creating one instead");
+              grunt.log.error("could not find existing project...creating one instead");
               _this.create(callback);
 
             } else {

@@ -31,7 +31,8 @@ module.exports = function(grunt) {
     // Configuration to be run (and then tested).
     takana: {
       options: {
-        includePaths: ['path/to/imports/arethis22']
+        projectName: "exampleProjectName", // optional
+        includePaths: ['shared/sass']      // optional
       }
     },
 
