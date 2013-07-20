@@ -29,7 +29,8 @@ module.exports = function(grunt) {
 
     var options = this.options({
       includePaths: [],
-      projectName: path.basename(process.cwd())
+      projectName: path.basename(process.cwd()),
+      projectPath: process.cwd()
     });
 
     grunt.log.writeln(["Takana: integrating with project " + options.projectName]);
@@ -62,14 +63,14 @@ module.exports = function(grunt) {
         };
 
         this.create          = function(callback) {
-          var createSQL = "INSERT INTO projects ( name ) VALUES (?)";
+          var createSQL = "INSERT INTO projects ( name, path ) VALUES (?, ?)";
           if (DEBUG) {
             console.log("running %j", createSQL);
           }
 
           grunt.log.write("Takana: creating project...");
 
-          db.run(createSQL, _this.name, function(error, lastId, changes) {
+          db.run(createSQL, _this.name, options.projectPath, function(error, lastId, changes) {
             if (error) {
               grunt.log.writeln("failed");
               grunt.log.error("Please contact support <help@usetakana.com>");
