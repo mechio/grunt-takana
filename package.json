@@ -1,7 +1,7 @@
 {
   "name": "grunt-takana",
   "description": "Takana grunt plugin",
-  "version": "0.1.2",
+  "version": "0.2.0",
   "homepage": "https://github.com/mechio/grunt-takana",
   "author": {
     "name": "nc",
