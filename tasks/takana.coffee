@@ -29,7 +29,7 @@ module.exports = (grunt) ->
             grunt.warn err
 
           includePaths: options.includePaths
-          outputStyle: options.outputStyle
+          outputStyle:  options.outputStyle
       )
 
   # attempts to create a websocket connection
@@ -96,7 +96,7 @@ module.exports = (grunt) ->
           data: 
             path: path
             name: name
-            includePaths: options.includePaths
+            includePaths: options.includePaths.join(',')
 
         connection.send JSON.stringify(message)
 
@@ -105,7 +105,9 @@ module.exports = (grunt) ->
         message = 
           event: 'project/update'
           data: 
-            includePaths: options.includePaths
+            name: name
+            path: path
+            includePaths: options.includePaths.join(',')
 
         connection.send JSON.stringify(message)
 
