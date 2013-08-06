@@ -32,6 +32,7 @@ module.exports = (grunt) ->
     )
 
     register options, =>
+      grunt.log.writeln "Compiling Sass files"
       grunt.util.async.forEachSeries @files, ((el, next) ->
         sass.render
           file: el.src[0]

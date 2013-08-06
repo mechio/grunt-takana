@@ -16,17 +16,19 @@
 
   module.exports = function(grunt) {
     var connect, launchAndConnect, printInstallationInstructions, projectName, projectPath, register, waitForConnection;
-    grunt.registerTask("takana:install", "Integrates project with Takana", function() {
+    grunt.registerTask("install_takana", "Integrates project with Takana", function() {
       var done, options,
         _this = this;
       done = this.async();
       options = this.options({
         path: projectPath(),
-        name: projectName()
+        name: projectName(),
+        shouldLaunch: true
       });
-      return register(options(function() {
-        return printInstallationInstructions();
-      }));
+      return register(options, function() {
+        printInstallationInstructions(options.name);
+        return done();
+      });
     });
     grunt.registerMultiTask("takana", "Compile SCSS to CSS", function() {
       var done, options,
@@ -36,9 +38,11 @@
         includePaths: [],
         outputStyle: "nested",
         path: projectPath(),
-        name: projectName()
+        name: projectName(),
+        shouldLaunch: false
       });
       return register(options, function() {
+        grunt.log.writeln("Compiling Sass files");
         return grunt.util.async.forEachSeries(_this.files, (function(el, next) {
           return sass.render({
             file: el.src[0],
@@ -52,7 +56,7 @@
             includePaths: options.includePaths,
             outputStyle: options.outputStyle
           });
-        }));
+        }), done());
       });
     });
     projectName = function() {
@@ -61,10 +65,10 @@
     projectPath = function() {
       return process.cwd();
     };
-    printInstallationInstructions = function() {
+    printInstallationInstructions = function(name) {
       grunt.log.subhead("Integrate Takana with ");
       grunt.log.writeln("Add this script tag just before </body> on every page you want to live edit");
-      return grunt.log.writeln("<script data-project=\"" + options.name + "\" src=\"http://localhost:48626/takana.js\"></script>");
+      return grunt.log.writeln("<script data-project=\"" + name + "\" src=\"http://localhost:48626/takana.js\"></script>");
     };
     connect = function(cb) {
       var client,
@@ -109,14 +113,17 @@
       });
     };
     register = function(options, cb) {
-      var supportDir;
+      var connectionManager, supportDir;
       supportDir = path.join(process.env.HOME, 'Library/Application Support/Takana/');
       if (!(fs.existsSync(supportDir))) {
         grunt.log.error("Couldn't find Takana Mac app, is it installed?");
-        printInstallationInstructions();
         return;
       }
-      return launchAndConnect(function(err, connection) {
+      connectionManager = connect;
+      if (options.shouldLaunch) {
+        connectionManager = launchAndConnect;
+      }
+      return connectionManager(function(err, connection) {
         var message, projectData;
         if (err) {
           return cb();
