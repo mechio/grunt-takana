@@ -4,7 +4,6 @@ path                = require("path")
 fs                  = require("fs")
 _                   = require("underscore")
 WebSocketClient     = require("websocket").client
-spawn               = require("child_process").spawn
 shell               = require("shelljs")
 
 module.exports = (grunt) ->
