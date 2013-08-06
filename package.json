@@ -32,7 +32,9 @@
     "grunt-contrib-jshint": "~0.6.0",
     "grunt-contrib-clean": "~0.4.0",
     "grunt-contrib-nodeunit": "~0.2.0",
-    "grunt": "~0.4.1"
+    "grunt": "~0.4.1",
+    "grunt-contrib-coffee": "~0.7.0",
+    "grunt-contrib-watch": "~0.5.1"
   },
   "peerDependencies": {
     "grunt": "~0.4.1"
@@ -41,7 +43,10 @@
     "gruntplugin"
   ],
   "dependencies": {
-    "sqlite3": "~2.1.14",
+    "node-sass": "~0.6.3",
+    "grunt-lib-contrib": "~0.6.1",
+    "jugglingdb": "~0.2.0-35",
+    "jugglingdb-sqlite3": "0.0.2",
     "underscore": "~1.5.1"
   }
 }
