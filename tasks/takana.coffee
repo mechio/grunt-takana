@@ -17,7 +17,7 @@ module.exports = (grunt) ->
     )
 
     register options, =>  
-      printInstallationInstructions()   
+      printInstallationInstructions(options.name)   
       done() 
 
   grunt.registerMultiTask "takana", "Compile SCSS to CSS", ->
