@@ -1,19 +1,23 @@
 (function() {
   "use strict";
-  var Schema, fs, path, sass, _;
+  var WebSocketClient, fs, path, sass, shell, spawn, _;
 
   sass = require("node-sass");
 
   path = require("path");
 
-  Schema = require("jugglingdb").Schema;
-
   fs = require("fs");
 
   _ = require("underscore");
 
+  WebSocketClient = require("websocket").client;
+
+  spawn = require("child_process").spawn;
+
+  shell = require("shelljs");
+
   module.exports = function(grunt) {
-    var registerProject;
+    var connect, launchAndConnect, register, waitForConnection;
     grunt.registerMultiTask("takana", "Compile SCSS to CSS", function() {
       var done, options,
         _this = this;
@@ -22,7 +26,7 @@
         includePaths: [],
         outputStyle: "nested"
       });
-      return registerProject(function() {
+      return register(options, function() {
         return grunt.util.async.forEachSeries(_this.files, (function(el, next) {
           return sass.render({
             file: el.src[0],
@@ -39,59 +43,90 @@
         }));
       });
     });
-    registerProject = function(cb) {
-      var Project, database, name, schema, supportDir;
-      supportDir = path.join(process.env.HOME, 'Library/Application Support/Takana/');
-      database = path.join(supportDir, 'takana.db');
-      schema = new Schema('sqlite3', {
-        database: database
+    connect = function(cb) {
+      var client,
+        _this = this;
+      client = new WebSocketClient();
+      client.on("connectFailed", function(error) {
+        return cb(error, null);
       });
-      if (!(fs.existsSync(supportDir)) || !(fs.existsSync(database))) {
-        grunt.log.writeln(["Takana: couldn't find Mac app, is Takana installed?"]);
-        cb();
-        return;
-      }
-      Project = schema.define("Project", {
-        path: {
-          type: String
-        },
-        name: {
-          type: String
-        },
-        createdAt: {
-          type: Number,
-          "default": Date.now
+      client.on("connect", function(connection) {
+        return cb(null, connection);
+      });
+      return client.connect("ws://localhost:48626/control");
+    };
+    waitForConnection = function(cb) {
+      var failureTimeout, onConnect, timedOut, timeout;
+      timeout = 5000;
+      timedOut = false;
+      failureTimeout = setTimeout(function() {
+        timedOut = true;
+        return cb(true, null);
+      }, timeout);
+      onConnect = function(err, connection) {
+        if (err && !timedOut) {
+          return setTimeout(function() {
+            return connect(onConnect);
+          }, 1000);
+        } else {
+          clearTimeout(failureTimeout);
+          return cb(null, connection);
+        }
+      };
+      return connect(onConnect);
+    };
+    launchAndConnect = function(cb) {
+      return connect(function(err, connection) {
+        if (err) {
+          shell.exec("open -a Takana");
+          return waitForConnection(cb);
+        } else {
+          return cb(err, connection);
         }
       });
-      Project.validatesUniquenessOf('name', {
-        message: 'name is not unique'
-      });
-      Project.validatesUniquenessOf('path', {
-        message: 'path is not unique'
-      });
-      name = path.basename(process.cwd());
-      path = process.cwd();
-      return Project.all(function(err, projects) {
-        var existingProject, project;
-        existingProject = _.find(projects, function(project) {
-          return project.name === name || project.path === path;
-        });
-        if (existingProject) {
-          grunt.log.oklns("Takana: syncing project '" + name + "' (" + path + ")");
+    };
+    register = function(options, cb) {
+      var supportDir;
+      supportDir = path.join(process.env.HOME, 'Library/Application Support/Takana/');
+      if (!(fs.existsSync(supportDir))) {
+        grunt.log.error("Couldn't find Takana Mac app, is it installed?");
+        return;
+      }
+      return launchAndConnect(function(err, connection) {
+        var message, name;
+        if (err) {
           return cb();
-        } else {
-          grunt.log.write("Takana: adding project '" + name + "' (" + path + ")...");
-          project = new Project({
-            path: path,
-            name: name
-          });
-          return project.save(function(err, project) {
-            if (err) {
-              grunt.log.error("failed");
-              grunt.log.error(err);
-            } else {
-              grunt.log.oklns("OK");
+        } else if (connection) {
+          name = path.basename(process.cwd());
+          path = process.cwd();
+          message = {
+            event: 'project/add',
+            data: {
+              path: path,
+              name: name,
+              includePaths: options.includePaths
             }
+          };
+          connection.send(JSON.stringify(message));
+          grunt.log.write("Syncing project...");
+          message = {
+            event: 'project/update',
+            data: {
+              includePaths: options.includePaths
+            }
+          };
+          connection.send(JSON.stringify(message));
+          connection.on("error", function(error) {
+            grunt.error("Couldn't register project, connection failed", error);
+            connection.close();
+            return cb();
+          });
+          connection.on("close", function() {
+            return cb();
+          });
+          return connection.on("message", function(message) {
+            grunt.log.ok();
+            connection.close();
             return cb();
           });
         }

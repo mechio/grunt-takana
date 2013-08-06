@@ -45,8 +45,8 @@
   "dependencies": {
     "node-sass": "~0.6.3",
     "grunt-lib-contrib": "~0.6.1",
-    "jugglingdb": "~0.2.0-35",
-    "jugglingdb-sqlite3": "0.0.2",
-    "underscore": "~1.5.1"
+    "underscore": "~1.5.1",
+    "websocket": "~1.0.8",
+    "shelljs": "~0.1.4"
   }
 }

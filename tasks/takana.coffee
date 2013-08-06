@@ -1,9 +1,11 @@
 "use strict"
-sass        = require("node-sass")
-path        = require("path")
-Schema      = require("jugglingdb").Schema
-fs          = require("fs")
-_           = require("underscore")
+sass                = require("node-sass")
+path                = require("path")
+fs                  = require("fs")
+_                   = require("underscore")
+WebSocketClient     = require("websocket").client
+spawn               = require("child_process").spawn
+shell               = require("shelljs")
 
 module.exports = (grunt) ->
   grunt.registerMultiTask "takana", "Compile SCSS to CSS", ->
@@ -14,7 +16,7 @@ module.exports = (grunt) ->
       outputStyle: "nested"
     )
 
-    registerProject =>
+    register options, =>
 
       grunt.util.async.forEachSeries @files, ((el, next) ->
         sass.render
@@ -30,51 +32,93 @@ module.exports = (grunt) ->
           outputStyle: options.outputStyle
       )
 
-  registerProject = (cb) ->
-    supportDir = path.join(process.env.HOME, 'Library/Application Support/Takana/')
-    database   = path.join(supportDir, 'takana.db')
-    schema     = new Schema('sqlite3', database: database)
+  # attempts to create a websocket connection
+  connect = (cb) ->
+    client = new WebSocketClient()
 
-    if !(fs.existsSync(supportDir)) || !(fs.existsSync(database))
-      grunt.log.writeln ["Takana: couldn't find Mac app, is Takana installed?"]
-      cb() 
+    client.on "connectFailed", (error) =>
+      cb(error, null)
+
+    client.on "connect", (connection) ->
+      cb(null, connection)
+
+    client.connect "ws://localhost:48626/control"
+
+  # auto-retries and waits 5 seconds before timing out 
+  waitForConnection = (cb) ->
+    timeout = 5000
+    timedOut = false
+
+    failureTimeout = setTimeout ->
+      timedOut = true
+      cb(true, null)
+    , timeout
+
+    onConnect = (err, connection) ->
+      if err && !timedOut
+        setTimeout ->
+          connect onConnect
+        , 1000
+
+      else 
+        clearTimeout failureTimeout
+        cb(null, connection)
+
+    connect onConnect
+
+  launchAndConnect = (cb) ->
+    # try and connect once (Takana is already running)
+    connect (err, connection) ->
+      if err
+        shell.exec("open -a Takana")
+        waitForConnection cb
+      else
+        cb(err, connection)
+
+
+  register = (options, cb) -> 
+    supportDir = path.join(process.env.HOME, 'Library/Application Support/Takana/')
+
+    if !(fs.existsSync(supportDir))
+      grunt.log.error "Couldn't find Takana Mac app, is it installed?"
       return
 
-    Project = schema.define("Project",
-      path:
-        type    : String
-      name:
-        type    : String
-      createdAt:
-        type    : Number
-        default : Date.now
-    )
-
-    Project.validatesUniquenessOf('name', message: 'name is not unique')
-    Project.validatesUniquenessOf('path', message: 'path is not unique')
-
-    name = path.basename(process.cwd())
-    path = process.cwd()
-
-    Project.all (err, projects) ->
-      existingProject = _.find projects, (project) ->  
-        return project.name == name || project.path == path
-
-      if existingProject
-        grunt.log.oklns "Takana: syncing project '#{name}' (#{path})"
+    launchAndConnect (err, connection) ->
+      if err
         cb()
 
-      else
-        grunt.log.write "Takana: adding project '#{name}' (#{path})..."
+      else if connection 
+        name = path.basename(process.cwd())
+        path = process.cwd()
 
-        project = new Project(path: path, name: name)
-        project.save (err, project) ->
-          if (err)
-            grunt.log.error "failed"
-            grunt.log.error err
-          else
-            grunt.log.oklns "OK"
+        message = 
+          event: 'project/add'
+          data: 
+            path: path
+            name: name
+            includePaths: options.includePaths
 
+        connection.send JSON.stringify(message)
+
+        grunt.log.write "Syncing project..."
+
+        message = 
+          event: 'project/update'
+          data: 
+            includePaths: options.includePaths
+
+        connection.send JSON.stringify(message)
+
+        connection.on "error", (error) ->
+          grunt.error "Couldn't register project, connection failed", error
+          connection.close()
           cb()
 
+        connection.on "close", ->
+          cb()
+
+        connection.on "message", (message) ->
+          grunt.log.ok()
+          connection.close()
+          cb()
   @
