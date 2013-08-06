@@ -65,6 +65,7 @@ grunt.initConfig({
 In lieu of a formal styleguide, take care to maintain the existing coding style. Add unit tests for any new or changed functionality. Lint and test your code using [Grunt](http://gruntjs.com/).
 
 ## Release History
+v0.3.1 - print Takana JS snippet
 v0.3.0 - drop in replacement for grunt-sass, auto integrate projects with Takana
 v0.1.1 - print Takana JS snippet and Chrome installation instructions for new projects
 v0.1.0 - first working version released
