@@ -1,10 +1,10 @@
 {
   "name": "grunt-takana",
   "description": "Takana grunt plugin",
-  "version": "0.3.1",
+  "version": "0.3.2",
   "homepage": "https://github.com/mechio/grunt-takana",
   "author": {
-    "name": "nc",
+    "name": "Namit Chadha",
     "email": "namit@mech.io",
     "url": "http://usetakana.com"
   },

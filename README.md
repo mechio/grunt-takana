@@ -1,71 +1,135 @@
 # grunt-takana
 
-> Takana grunt plugin
+[Grunt][grunt] tasks to compile SCSS to CSS using [node-sass](https://github.com/andrew/node-sass)
+
+*Requires grunt 0.4.*
+
+## Overview
+
+This task compiles Sass using node-sass based on libsass the C Sass compiler. It is much faster than the Ruby based compiler though it doesn't support Compass.
+
+It also integrates your Grunt-based project with Takana [http://usetakana.com] so you can live-edit Sass and CSS stylesheets within your project. Changing HTML and JavaScript files will auto-refresh your browser too.
 
 ## Getting Started
-This plugin requires Grunt `~0.4.1`
 
-If you haven't used [Grunt](http://gruntjs.com/) before, be sure to check out the [Getting Started](http://gruntjs.com/getting-started) guide, as it explains how to create a [Gruntfile](http://gruntjs.com/sample-gruntfile) as well as install and use Grunt plugins. Once you're familiar with that process, you may install this plugin with this command:
+If you haven't used [grunt][] before, be sure to check out the [Getting Started][] guide, as it explains how to create a [gruntfile][Getting Started] as well as install and use grunt plugins. Once you're familiar with that process, install this plugin with this command:
 
 ```shell
-npm install grunt-takana --save-dev
+npm install --save-dev grunt-takana
 ```
 
-Once the plugin has been installed, it may be enabled inside your Gruntfile with this line of JavaScript:
+[grunt]: http://gruntjs.com
+[Getting Started]: https://github.com/gruntjs/grunt/wiki/Getting-started
 
-```js
-grunt.loadNpmTasks('grunt-takana');
-```
 
-## The "takana" task
+## Documentation
 
-### Overview
-In your project's Gruntfile, add a section named `takana` to the data object passed into `grunt.initConfig()`.
-
-```js
-grunt.initConfig({
-  takana: {
-    options: {
-      projectName: "web-project-name" //optional
-			includePaths: [] 						    //optional
-    },
-  },
-})
-```
+See the [Gruntfile](https://github.com/sindresorhus/grunt-sass/blob/master/Gruntfile.js) in this repo for a full example.
 
 ### Options
 
-#### options.projectName
-Type: `String`
-Default value: CURRENT_WORKING_DIRECTORy
 
-A string value that is used as the Takana project name.
+#### includePaths
 
-#### options.includePaths
-Type: `Array`
-Default value: []
+Type: `Array`  
+Default: `[]`
 
-A list of paths that should be used by the Sass compiler when @importing files.
+Import paths to include.
 
-### Usage Examples
 
-#### Default Options
-In this example, the default options are used to do something with whatever. So if the `testing` file has the content `Testing` and the `123` file had the content `1 2 3`, the generated result would be `Testing, 1 2 3.`
+#### outputStyle
 
-```js
+Type: `String`  
+Default: `nested`
+
+Specify the CSS output style. Available styles are 'nested', 'expanded', 'compact', 'compressed'.
+
+*According to the [node-sass](https://github.com/andrew/node-sass) documentation, there is currently a problem with lib-sass so this option is best avoided for the time being.*
+
+
+### Example config
+
+```javascript
 grunt.initConfig({
-  takana: {
-    options: {},
+  sass: {                 // Task
+    dist: {               // Target
+      files: {            // Dictionary of files
+        'main.css': 'main.scss'   // 'destination': 'source'
+      }
+    },
+    dev: {                // Another target
+      options: {            // Dictionary of render options
+        includePaths: [
+          'path/to/imports/'
+        ]
+      },
+      files: {
+        'main.css': 'main.scss'
+      }
+    }
+  }
+});
 
-  },
-})
+grunt.loadNpmTasks('grunt-sass');
+grunt.registerTask('default', ['sass']);
 ```
 
-## Contributing
-In lieu of a formal styleguide, take care to maintain the existing coding style. Add unit tests for any new or changed functionality. Lint and test your code using [Grunt](http://gruntjs.com/).
 
-## Release History
-v0.3.1 - print Takana JS snippet
-v0.3.0 - drop in replacement for grunt-sass, auto integrate projects with Takana
-v0.1.1 - print Takana JS snippet and Chrome installation instructions for new projects
-v0.1.0 - first working version released
+### Example usage
+
+
+#### Compile
+
+```javascript
+grunt.initConfig({
+  sass: {
+    dist: {
+      files: {
+        'main.css': 'main.scss'
+      }
+    }
+  }
+});
+```
+
+
+#### Compile with render options
+
+If you specify `options`, they will be passed along to the [node-sass](https://github.com/andrew/node-sass) `render` method.
+
+```javascript
+grunt.initConfig({
+  sass: {
+    dist: {
+      options: {
+        includePaths: ['imports/are/here/'],
+        outputStyle: 'nested'
+      },
+      files: {
+        'main.css': 'main.scss'
+      }
+    }
+  }
+});
+```
+
+
+#### Compile multiple files
+
+You can also compile multiple files into multiple destinations.
+
+```javascript
+grunt.initConfig({
+  sass: {
+    files: {
+      'main.css': 'main.scss',
+      'widgets.css': 'widgets.sass'
+    }
+  }
+});
+```
+
+
+## License
+
+MIT License • © [Sindre Sorhus](http://sindresorhus.com) [Mechio Ltd.](http://mech.io)
