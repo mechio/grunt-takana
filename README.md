@@ -132,4 +132,4 @@ grunt.initConfig({
 
 ## License
 
-MIT License • © [Sindre Sorhus](http://sindresorhus.com) [Mechio Ltd.](http://mech.io)
+MIT License • © [Sindre Sorhus](http://sindresorhus.com) & [Mechio Ltd.](http://mech.io)
