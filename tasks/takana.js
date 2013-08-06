@@ -1,6 +1,6 @@
 (function() {
   "use strict";
-  var WebSocketClient, fs, path, sass, shell, spawn, _;
+  var WebSocketClient, fs, path, sass, shell, _;
 
   sass = require("node-sass");
 
@@ -12,8 +12,6 @@
 
   WebSocketClient = require("websocket").client;
 
-  spawn = require("child_process").spawn;
-
   shell = require("shelljs");
 
   module.exports = function(grunt) {
@@ -24,7 +22,9 @@
       done = this.async();
       options = this.options({
         includePaths: [],
-        outputStyle: "nested"
+        outputStyle: "nested",
+        path: process.cwd(),
+        name: path.basename(process.cwd())
       });
       return register(options, function() {
         return grunt.util.async.forEachSeries(_this.files, (function(el, next) {
@@ -93,27 +93,25 @@
         return;
       }
       return launchAndConnect(function(err, connection) {
-        var message, name;
+        var message;
         if (err) {
           return cb();
         } else if (connection) {
-          name = path.basename(process.cwd());
-          path = process.cwd();
           message = {
             event: 'project/add',
             data: {
-              path: path,
-              name: name,
+              path: options.path,
+              name: options.name,
               includePaths: options.includePaths.join(',')
             }
           };
           connection.send(JSON.stringify(message));
-          grunt.log.write("Syncing project...");
+          grunt.log.write("Syncing project with Takana...");
           message = {
             event: 'project/update',
             data: {
-              name: name,
-              path: path,
+              name: options.name,
+              path: options.path,
               includePaths: options.includePaths.join(',')
             }
           };
@@ -128,6 +126,9 @@
           });
           return connection.on("message", function(message) {
             grunt.log.ok();
+            grunt.log.subhead("Installation");
+            grunt.log.writeln("Add this script tag just before </body> on every page you want to live edit");
+            grunt.log.writeln("<script data-project=\"" + options.name + "\" src=\"http://localhost:48626/takana.js\"></script>");
             connection.close();
             return cb();
           });

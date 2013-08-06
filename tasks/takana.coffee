@@ -13,10 +13,11 @@ module.exports = (grunt) ->
     options = @options(
       includePaths: []
       outputStyle: "nested"
+      path: process.cwd()
+      name: path.basename(process.cwd())
     )
 
     register options, =>
-
       grunt.util.async.forEachSeries @files, ((el, next) ->
         sass.render
           file: el.src[0]
@@ -87,25 +88,22 @@ module.exports = (grunt) ->
         cb()
 
       else if connection 
-        name = path.basename(process.cwd())
-        path = process.cwd()
-
         message = 
           event: 'project/add'
           data: 
-            path: path
-            name: name
+            path: options.path
+            name: options.name
             includePaths: options.includePaths.join(',')
 
         connection.send JSON.stringify(message)
 
-        grunt.log.write "Syncing project..."
+        grunt.log.write "Syncing project with Takana..."
 
         message = 
           event: 'project/update'
           data: 
-            name: name
-            path: path
+            name: options.name
+            path: options.path
             includePaths: options.includePaths.join(',')
 
         connection.send JSON.stringify(message)
@@ -120,6 +118,11 @@ module.exports = (grunt) ->
 
         connection.on "message", (message) ->
           grunt.log.ok()
+
+          grunt.log.subhead("Installation")
+          grunt.log.writeln("Add this script tag just before </body> on every page you want to live edit")
+          grunt.log.writeln("<script data-project=\"" + options.name + "\" src=\"http://localhost:48626/takana.js\"></script>")
+
           connection.close()
           cb()
   @
