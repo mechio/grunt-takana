@@ -70,13 +70,16 @@ grunt.initConfig({
   }
 });
 
-grunt.loadNpmTasks('grunt-sass');
-grunt.registerTask('default', ['sass']);
+grunt.loadNpmTasks('grunt-takana');
+grunt.registerTask('default', ['takana']);
 ```
 
 
 ### Example usage
 
+#### Install Takana
+
+Run `grunt install_takana` to print the Takana JavaScript integration snippet and integrate Takana with your Grunt project
 
 #### Compile
 
@@ -132,4 +135,4 @@ grunt.initConfig({
 
 ## License
 
-MIT License • © [Sindre Sorhus](http://sindresorhus.com) [Mechio Ltd.](http://mech.io)
+MIT License • © [Sindre Sorhus](http://sindresorhus.com) & [Mechio Ltd.](http://mech.io)

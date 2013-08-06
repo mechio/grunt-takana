@@ -15,7 +15,19 @@
   shell = require("shelljs");
 
   module.exports = function(grunt) {
-    var connect, launchAndConnect, register, waitForConnection;
+    var connect, launchAndConnect, printInstallationInstructions, projectName, projectPath, register, waitForConnection;
+    grunt.registerTask("takana:install", "Integrates project with Takana", function() {
+      var done, options,
+        _this = this;
+      done = this.async();
+      options = this.options({
+        path: projectPath(),
+        name: projectName()
+      });
+      return register(options(function() {
+        return printInstallationInstructions();
+      }));
+    });
     grunt.registerMultiTask("takana", "Compile SCSS to CSS", function() {
       var done, options,
         _this = this;
@@ -23,8 +35,8 @@
       options = this.options({
         includePaths: [],
         outputStyle: "nested",
-        path: process.cwd(),
-        name: path.basename(process.cwd())
+        path: projectPath(),
+        name: projectName()
       });
       return register(options, function() {
         return grunt.util.async.forEachSeries(_this.files, (function(el, next) {
@@ -43,6 +55,17 @@
         }));
       });
     });
+    projectName = function() {
+      return path.basename(process.cwd());
+    };
+    projectPath = function() {
+      return process.cwd();
+    };
+    printInstallationInstructions = function() {
+      grunt.log.subhead("Integrate Takana with ");
+      grunt.log.writeln("Add this script tag just before </body> on every page you want to live edit");
+      return grunt.log.writeln("<script data-project=\"" + options.name + "\" src=\"http://localhost:48626/takana.js\"></script>");
+    };
     connect = function(cb) {
       var client,
         _this = this;
@@ -90,30 +113,30 @@
       supportDir = path.join(process.env.HOME, 'Library/Application Support/Takana/');
       if (!(fs.existsSync(supportDir))) {
         grunt.log.error("Couldn't find Takana Mac app, is it installed?");
+        printInstallationInstructions();
         return;
       }
       return launchAndConnect(function(err, connection) {
-        var message;
+        var message, projectData;
         if (err) {
           return cb();
         } else if (connection) {
+          projectData = {
+            path: options.path,
+            name: options.name
+          };
+          if (options.includePaths) {
+            projectData.includePaths = options.includePaths;
+          }
           message = {
             event: 'project/add',
-            data: {
-              path: options.path,
-              name: options.name,
-              includePaths: options.includePaths.join(',')
-            }
+            data: projectData
           };
           connection.send(JSON.stringify(message));
           grunt.log.write("Syncing project with Takana...");
           message = {
             event: 'project/update',
-            data: {
-              name: options.name,
-              path: options.path,
-              includePaths: options.includePaths.join(',')
-            }
+            data: projectData
           };
           connection.send(JSON.stringify(message));
           connection.on("error", function(error) {
@@ -126,9 +149,6 @@
           });
           return connection.on("message", function(message) {
             grunt.log.ok();
-            grunt.log.subhead("Installation");
-            grunt.log.writeln("Add this script tag just before </body> on every page you want to live edit");
-            grunt.log.writeln("<script data-project=\"" + options.name + "\" src=\"http://localhost:48626/takana.js\"></script>");
             connection.close();
             return cb();
           });

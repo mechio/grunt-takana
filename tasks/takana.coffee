@@ -7,14 +7,28 @@ WebSocketClient     = require("websocket").client
 shell               = require("shelljs")
 
 module.exports = (grunt) ->
+  grunt.registerTask "install_takana", "Integrates project with Takana", ->
+    done = @async()
+
+    options = @options(
+      path: projectPath()
+      name: projectName()
+      shouldLaunch: true
+    )
+
+    register options, =>  
+      printInstallationInstructions()   
+      done() 
+
   grunt.registerMultiTask "takana", "Compile SCSS to CSS", ->
     done = @async()
 
     options = @options(
       includePaths: []
       outputStyle: "nested"
-      path: process.cwd()
-      name: path.basename(process.cwd())
+      path: projectPath()
+      name: projectName()
+      shouldLaunch: false
     )
 
     register options, =>
@@ -30,7 +44,19 @@ module.exports = (grunt) ->
 
           includePaths: options.includePaths
           outputStyle:  options.outputStyle
-      )
+      ), done()
+
+  projectName = ->
+    path.basename(process.cwd())
+
+  projectPath = ->
+    process.cwd()
+
+  printInstallationInstructions = (name) ->
+    grunt.log.subhead("Integrate Takana with #{}")
+    grunt.log.writeln("Add this script tag just before </body> on every page you want to live edit")
+    grunt.log.writeln("<script data-project=\"" + name + "\" src=\"http://localhost:48626/takana.js\"></script>")
+
 
   # attempts to create a websocket connection
   connect = (cb) ->
@@ -83,17 +109,24 @@ module.exports = (grunt) ->
       grunt.log.error "Couldn't find Takana Mac app, is it installed?"
       return
 
-    launchAndConnect (err, connection) ->
+    connectionManager = connect
+    if options.shouldLaunch
+      connectionManager = launchAndConnect
+
+    connectionManager (err, connection) ->
       if err
         cb()
 
       else if connection 
+        projectData = 
+          path: options.path
+          name: options.name
+
+        projectData.includePaths = options.includePaths if options.includePaths
+
         message = 
           event: 'project/add'
-          data: 
-            path: options.path
-            name: options.name
-            includePaths: options.includePaths.join(',')
+          data: projectData
 
         connection.send JSON.stringify(message)
 
@@ -101,10 +134,7 @@ module.exports = (grunt) ->
 
         message = 
           event: 'project/update'
-          data: 
-            name: options.name
-            path: options.path
-            includePaths: options.includePaths.join(',')
+          data: projectData
 
         connection.send JSON.stringify(message)
 
@@ -118,11 +148,6 @@ module.exports = (grunt) ->
 
         connection.on "message", (message) ->
           grunt.log.ok()
-
-          grunt.log.subhead("Installation")
-          grunt.log.writeln("Add this script tag just before </body> on every page you want to live edit")
-          grunt.log.writeln("<script data-project=\"" + options.name + "\" src=\"http://localhost:48626/takana.js\"></script>")
-
           connection.close()
           cb()
   @
