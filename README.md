@@ -24,7 +24,7 @@ npm install --save-dev grunt-takana
 
 ## Documentation
 
-See the [Gruntfile](https://github.com/sindresorhus/grunt-sass/blob/master/Gruntfile.js) in this repo for a full example.
+See the [Gruntfile](https://github.com/mechio/grunt-takana/blob/master/Gruntfile.coffee) in this repo for a full example.
 
 ### Options
 
