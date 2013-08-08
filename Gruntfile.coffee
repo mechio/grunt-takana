@@ -11,13 +11,14 @@ module.exports = (grunt) ->
       compile:
         files:
           "test/tmp/test.css": "test/fixtures/test.scss"
-
-      include:
         options:
           includePaths: ["./test/fixtures/"]
 
+      includePath:
         files:
-          "test/tmp/test3.css": "test/fixtures/includePaths.scss"
+          "test/tmp/test.css": "test/fixtures/include_path.scss"
+        options:
+          includePaths: ["./test/fixtures/includes"]
 
     nodeunit:
       tasks: ["test/*_test.js"]

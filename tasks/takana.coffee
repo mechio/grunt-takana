@@ -45,7 +45,7 @@ module.exports = (grunt) ->
 
           includePaths: options.includePaths
           outputStyle:  options.outputStyle
-      )
+      ), @async()
 
   projectName = ->
     path.basename(process.cwd())

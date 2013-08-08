@@ -43,7 +43,7 @@
     "gruntplugin"
   ],
   "dependencies": {
-    "node-sass": "~0.6.3",
+    "takana-sass": "~0.7.0",
     "grunt-lib-contrib": "~0.6.1",
     "underscore": "~1.5.1",
     "websocket": "~1.0.8",
