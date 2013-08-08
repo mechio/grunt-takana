@@ -2,7 +2,7 @@
   "use strict";
   var WebSocketClient, fs, path, sass, shell, _;
 
-  sass = require("node-sass");
+  sass = require("takana-sass");
 
   path = require("path");
 

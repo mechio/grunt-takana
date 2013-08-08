@@ -1,5 +1,5 @@
 "use strict"
-sass                = require("node-sass")
+sass                = require("takana-sass")
 path                = require("path")
 fs                  = require("fs")
 _                   = require("underscore")
