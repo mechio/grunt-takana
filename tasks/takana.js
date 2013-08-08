@@ -56,7 +56,7 @@
             includePaths: options.includePaths,
             outputStyle: options.outputStyle
           });
-        }), done());
+        }));
       });
     });
     projectName = function() {

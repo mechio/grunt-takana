@@ -45,7 +45,7 @@ module.exports = (grunt) ->
 
           includePaths: options.includePaths
           outputStyle:  options.outputStyle
-      ), done()
+      )
 
   projectName = ->
     path.basename(process.cwd())
