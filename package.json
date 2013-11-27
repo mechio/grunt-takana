@@ -1,8 +1,25 @@
 {
   "name": "grunt-takana",
-  "description": "Takana grunt plugin",
-  "version": "0.5.3",
+  "version": "0.9.0",
+  "description": "Live-edit CSS, and SCSS on your webpages and refresh your browser on HTML, JS and other file saves",
+  "keywords": [
+    "gruntplugin",
+    "css",
+    "sass",
+    "scss",
+    "style",
+    "compile",
+    "preprocess",
+    "reload",
+    "livereload",
+    "liverefresh",
+    "refresh",
+    "livestyle",
+    "style",
+    "less"
+  ],
   "homepage": "https://github.com/mechio/grunt-takana",
+  "bugs": "https://github.com/mechio/grunt-takana/issues",
   "author": {
     "name": "Namit Chadha",
     "email": "namit@mech.io",
@@ -10,43 +27,33 @@
   },
   "repository": {
     "type": "git",
-    "url": "git@github.com:mechio/grunt-takana.git"
-  },
-  "bugs": {
-    "url": "https://github.com/mechio/grunt-takana/issues"
-  },
-  "licenses": [
-    {
-      "type": "MIT",
-      "url": "https://github.com/mechio/grunt-takana/blob/master/LICENSE-MIT"
-    }
-  ],
-  "main": "Gruntfile.js",
-  "engines": {
-    "node": ">= 0.8.0"
+    "url": "git://github.com/mechio/grunt-takana.git"
   },
   "scripts": {
-    "test": "grunt test"
+    "test": "grunt"
+  },
+  "dependencies": {
+    "node-sass": "~0.7.0",
+    "async": "~0.2.9",
+    "socket.io-client": "~0.9.16",
+    "websocket": "~1.0.8",
+    "shelljs": "~0.2.6"
   },
   "devDependencies": {
-    "grunt-contrib-jshint": "~0.6.0",
-    "grunt-contrib-clean": "~0.4.0",
-    "grunt-contrib-nodeunit": "~0.2.0",
-    "grunt": "~0.4.1",
-    "grunt-contrib-coffee": "~0.7.0",
-    "grunt-contrib-watch": "~0.5.1"
+    "grunt": "~0.4.0",
+    "grunt-contrib-clean": "~0.5.0",
+    "grunt-contrib-nodeunit": "~0.2.2"
   },
   "peerDependencies": {
-    "grunt": "~0.4.1"
+    "grunt": "~0.4.0"
   },
-  "keywords": [
-    "gruntplugin"
-  ],
-  "dependencies": {
-    "takana-sass": "~0.7.0",
-    "grunt-lib-contrib": "~0.6.1",
-    "underscore": "~1.5.1",
-    "websocket": "~1.0.8",
-    "shelljs": "~0.1.4"
-  }
+  "engines": {
+    "node": ">=0.10.0"
+  },
+  "licenses": {
+    "type": "MIT"
+  },
+  "files": [
+    "tasks/sass.js"
+  ]
 }
