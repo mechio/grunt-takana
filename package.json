@@ -3,10 +3,7 @@
   "description": "Live edit SCSS stylesheets",
   "version": "0.1.0",
   "homepage": "https://github.com/mechio/takana",
-  "author": {
-    "name": "Mechio",
-    "email": "code@mech.io"
-  },
+  "author": "Mechio <code@mech.io>",
   "repository": {
     "type": "git",
     "url": "git://github.com/mechio/takana.git"
@@ -24,7 +21,8 @@
     "node": ">= 0.8.0"
   },
   "scripts": {
-    "test": "grunt test"
+    "test": "grunt test",
+    "preinstall": "npm i -g takana && takana sublime:install"
   },
   "devDependencies": {
     "grunt-contrib-jshint": "~0.6.0",
@@ -41,5 +39,10 @@
   ],
   "dependencies": {
     "takana": "0.0.2"
-  }
+  },
+  "main": "tasks/takana.js",
+  "directories": {
+    "test": "test"
+  },
+  "license": "ISC"
 }
