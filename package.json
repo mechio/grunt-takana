@@ -1,59 +1,45 @@
 {
   "name": "grunt-takana",
-  "version": "0.9.0",
-  "description": "Live-edit CSS, and SCSS on your webpages and refresh your browser on HTML, JS and other file saves",
-  "keywords": [
-    "gruntplugin",
-    "css",
-    "sass",
-    "scss",
-    "style",
-    "compile",
-    "preprocess",
-    "reload",
-    "livereload",
-    "liverefresh",
-    "refresh",
-    "livestyle",
-    "style",
-    "less"
-  ],
-  "homepage": "https://github.com/mechio/grunt-takana",
-  "bugs": "https://github.com/mechio/grunt-takana/issues",
+  "description": "Live edit SCSS stylesheets",
+  "version": "0.1.0",
+  "homepage": "https://github.com/mechio/takana",
   "author": {
-    "name": "Namit Chadha",
-    "email": "namit@mech.io",
-    "url": "http://usetakana.com"
+    "name": "Mechio",
+    "email": "code@mech.io"
   },
   "repository": {
     "type": "git",
-    "url": "git://github.com/mechio/grunt-takana.git"
+    "url": "git://github.com/mechio/takana.git"
+  },
+  "bugs": {
+    "url": "https://github.com/mechio/takana/issues"
+  },
+  "licenses": [
+    {
+      "type": "MIT",
+      "url": "https://github.com/mechio/takana/blob/master/LICENSE-MIT"
+    }
+  ],
+  "engines": {
+    "node": ">= 0.8.0"
   },
   "scripts": {
-    "test": "grunt"
-  },
-  "dependencies": {
-    "node-sass": "~0.7.0",
-    "async": "~0.2.9",
-    "socket.io-client": "~0.9.16",
-    "websocket": "~1.0.8",
-    "shelljs": "~0.2.6"
+    "test": "grunt test"
   },
   "devDependencies": {
-    "grunt": "~0.4.0",
-    "grunt-contrib-clean": "~0.5.0",
-    "grunt-contrib-nodeunit": "~0.2.2"
+    "grunt-contrib-jshint": "~0.6.0",
+    "grunt-contrib-clean": "~0.4.0",
+    "grunt-contrib-nodeunit": "~0.2.0",
+    "grunt": "~0.4.2",
+    "execSync": "~1.0.1-pre"
   },
   "peerDependencies": {
-    "grunt": "~0.4.0"
+    "grunt": "~0.4.2"
   },
-  "engines": {
-    "node": ">=0.10.0"
-  },
-  "licenses": {
-    "type": "MIT"
-  },
-  "files": [
-    "tasks/sass.js"
-  ]
+  "keywords": [
+    "gruntplugin"
+  ],
+  "dependencies": {
+    "takana": "0.0.2"
+  }
 }

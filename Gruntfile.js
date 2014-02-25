@@ -1,28 +1,60 @@
-'use strict';
-module.exports = function (grunt) {
-	grunt.initConfig({
-		takana: {
-			
-		},
-		sass: {
-			compile: {
-				files: {
-					'destination/style.css': 'source/test.scss'
-				}
-			},
-			includePaths: {
-				options: {
-					'includePaths': ['./source/sasslibs']
-				},
-				files: {
-					'destination/style.css': 'source/test.scss'
-				}
-			}
-		}
-	});
+/*
+ * grunt-takana
+ * https://github.com/mechio/takana
+ *
+ * Copyright (c) 2014 Mechio
+ * Licensed under the MIT license.
+ */
 
-	grunt.loadTasks('tasks');
-	grunt.loadNpmTasks('grunt-takana');
-	grunt.loadNpmTasks('grunt-sass');
-	grunt.registerTask('default', ['sass']);
+'use strict';
+
+module.exports = function(grunt) {
+
+  // Project configuration.
+  grunt.initConfig({
+    jshint: {
+      all: [
+        'Gruntfile.js',
+        'tasks/*.js',
+        '<%= nodeunit.tests %>',
+      ],
+      options: {
+        jshintrc: '.jshintrc',
+      },
+    },
+
+    // Before generating any new files, remove any previously-created files.
+    clean: {
+      tests: ['tmp'],
+    },
+
+    // Configuration to be run (and then tested).
+    takana: {
+      options: {
+        
+      }
+    },
+
+    // Unit tests.
+    nodeunit: {
+      tests: ['test/*_test.js'],
+    },
+
+  });
+
+  // Actually load this plugin's task(s).
+  grunt.loadTasks('tasks');
+
+  // These plugins provide necessary tasks.
+  grunt.loadNpmTasks('grunt-contrib-jshint');
+  grunt.loadNpmTasks('grunt-contrib-clean');
+  grunt.loadNpmTasks('grunt-contrib-nodeunit');
+
+  // Whenever the "test" task is run, first clean the "tmp" dir, then run this
+  // plugin's task(s), then test the result.
+  grunt.registerTask('test', ['clean', 'takana', 'nodeunit']);
+
+  // By default, lint and run all tests.
+  grunt.registerTask('default', ['test']);
+
 };
