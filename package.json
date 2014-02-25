@@ -1,7 +1,7 @@
 {
   "name": "grunt-takana",
   "description": "Live edit SCSS stylesheets",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "homepage": "https://github.com/mechio/takana",
   "author": "Mechio <code@mech.io>",
   "repository": {

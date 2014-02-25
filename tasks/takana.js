@@ -19,8 +19,7 @@ module.exports = function(grunt) {
 
     var options = this.options({
       name: path.basename(cwd),
-      path: cwd,
-      includePaths: []
+      path: cwd
     });
 
     var client = new Client();
@@ -37,9 +36,11 @@ module.exports = function(grunt) {
         grunt.log.writeln('');
         grunt.log.writeln(scriptTag);
         grunt.log.writeln('');
-        grunt.log.writeln('3) Refresh your browser');
-        grunt.log.writeln('4) Edit CSS or SCSS in Sublime Text');
-        grunt.log.writeln('5) See your styles applied in real-time.');
+        grunt.log.writeln('2) $ npm install -g takana');
+        grunt.log.writeln('3) $ takana sublime:install');
+        grunt.log.writeln('4) Refresh your browser');
+        grunt.log.writeln('5) Edit CSS or SCSS in Sublime Text');
+        grunt.log.writeln('6) See your styles applied in real-time.');
         done()
       });
     });
