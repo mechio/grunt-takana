@@ -1,20 +1,28 @@
 # grunt-takana
 
-> Live edit SCSS stylesheets
+> Live edit SCSS and CSS stylesheets
 
-# What is this?
-grunt-takana is a Grunt plugin for Takana. With Takana you can see changes you make to SCSS or CSS files in Sublime Text instantly in your browser. 
+grunt-takana is the Grunt plugin for Takana. If you're not using grunt, head over to [grunt/takana](http://mech.io/) and follow the CLI instructions there.
 
 # Getting started
-This plugin works with grunt. If you haven't used grunt before, or are using another asset pipeline head over to mechio/takana and follow the instructions there.
 
-For grunt users:
+Install the grunt-takana
 `npm install grunt-takana`
 
-Then add this snippet to your Gruntfile
+Add this snippet to your Gruntfile
 `grunt.loadNpmTasks('grunt-takana');`
 
-And run `grunt takana` follow the instructions provided.
+Run grunt takana from the root of your project folder
+
+`grunt takana`
+
+Add the JavaScript snippit to any page you want to live update:
+
+```
+<script type="text/javascript" src="http://localhost:48626/takana.js"></script>
+```
+
+Now just open the web page that you pasted the snippit into. Then open one of its stylesheets in Sublime and start live-editing!
 
 # Documentation
 
@@ -26,3 +34,10 @@ Type: `Array`
 Default: `[]`
 
 Import paths to include, the same option grunt-sass uses.
+
+## path
+
+Type: `String`
+Default: `current working directory`
+
+Root project folder containing the stylesheets.
