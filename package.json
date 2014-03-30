@@ -1,20 +1,20 @@
 {
   "name": "grunt-takana",
   "description": "Live edit SCSS stylesheets",
-  "version": "1.0.3",
-  "homepage": "https://github.com/mechio/takana",
+  "version": "1.0.4",
+  "homepage": "https://github.com/mechio/grunt-takana",
   "author": "Mechio <code@mech.io>",
   "repository": {
     "type": "git",
-    "url": "git://github.com/mechio/takana.git"
+    "url": "git://github.com/mechio/grunt-takana.git"
   },
   "bugs": {
-    "url": "https://github.com/mechio/takana/issues"
+    "url": "https://github.com/mechio/grunt-takana/issues"
   },
   "licenses": [
     {
       "type": "MIT",
-      "url": "https://github.com/mechio/takana/blob/master/LICENSE-MIT"
+      "url": "https://github.com/mechio/grunt-takana/blob/master/LICENSE-MIT"
     }
   ],
   "engines": {
