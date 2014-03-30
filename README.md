@@ -2,19 +2,25 @@
 
 > Live edit SCSS and CSS stylesheets
 
-grunt-takana is the Grunt plugin for Takana. If you're not using grunt, head over to [grunt/takana](http://mech.io/) and follow the CLI instructions there.
+Grunt plugin for Takana. If you're not using grunt, head over to [mechio/takana](https://github.com/mechio/takana) and follow the CLI instructions there.
 
 # Getting started
 
-Install the grunt-takana
-`npm install grunt-takana`
+Install the plugin
+```
+npm install grunt-takana
+```
 
 Add this snippet to your Gruntfile
-`grunt.loadNpmTasks('grunt-takana');`
+```
+grunt.loadNpmTasks('grunt-takana');
+```
 
-Run grunt takana from the root of your project folder
+Run takana from the root of your project folder
 
-`grunt takana`
+```
+grunt takana
+```
 
 Add the JavaScript snippit to any page you want to live update:
 
@@ -24,20 +30,18 @@ Add the JavaScript snippit to any page you want to live update:
 
 Now just open the web page that you pasted the snippit into. Then open one of its stylesheets in Sublime and start live-editing!
 
-# Documentation
+# Options
 
-Options:
+#### includePaths
 
-## includePaths
-
-Type: `Array`
+Type: `Array`   
 Default: `[]`
 
 Import paths to include, the same option grunt-sass uses.
 
-## path
+#### path
 
-Type: `String`
+Type: `String`  
 Default: `current working directory`
 
 Root project folder containing the stylesheets.
