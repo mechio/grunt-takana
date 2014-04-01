@@ -6,23 +6,23 @@ Grunt plugin for Takana. If you're not using grunt, head over to [mechio/takana]
 
 # Getting started
 
-Install the plugin
+#### 1. Install the plugin
 ```
 npm install grunt-takana
 ```
 
-Add this snippet to your Gruntfile
+#### 2. Add this snippet to your Gruntfile
 ```
 grunt.loadNpmTasks('grunt-takana');
 ```
 
-Run takana from the root of your project folder
+#### 3. Run takana from the root of your project folder
 
 ```
 grunt takana
 ```
 
-Add the JavaScript snippit to any page you want to live update:
+#### 4. Add the JavaScript snippit to any page you want to live update
 
 ```
 <script type="text/javascript" src="http://localhost:48626/takana.js"></script>
